@@ -1,3 +1,4 @@
+from django.conf import settings
 from django import template
 from django.conf import settings
 from django.db import models
@@ -39,28 +40,28 @@ class AnalyticsNode(template.Node):
         
     def render(self, context):
         content = ''
-        if self.site:
-            code_set = self.site.analytics_set.all()
-            if code_set:
-                code = code_set[0].analytics_code
+        if settings.DEBUG :
+            return ''
+        else :
+            if self.site:
+                code_set = self.site.analytics_set.all()
+                if code_set:
+                    code = code_set[0].analytics_code
+                else:
+                    return ''
+            elif self.code:
+                code = self.code
             else:
                 return ''
-        elif self.code:
-            code = self.code
-        else:
-            return ''
-        
-        if code.strip() != '':
-            t = loader.get_template(self.template_name)
-            c = Context({
-                'analytics_code': code,
-                'track_page_load_time': getattr(settings,
-                                                "GOOGLE_ANALYTICS_TRACK_PAGE_LOAD_TIME",
-                                                False),
-            })
-            return t.render(c)
-        else:
-            return ''
+
+            if code.strip() != '':
+                t = loader.get_template(self.template_name)
+                c = Context({
+                    'analytics_code': code,
+                })
+                return t.render(c)
+            else:
+                return ''
         
 register.tag('analytics', do_get_analytics)
 register.tag('analytics_async', do_get_analytics)
