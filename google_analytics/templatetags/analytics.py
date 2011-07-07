@@ -40,7 +40,7 @@ class AnalyticsNode(template.Node):
         
     def render(self, context):
         content = ''
-        if settings.DEBUG :
+        if settings.DEBUG or settings.IS_DEV :
             return ''
         else :
             if self.site:
