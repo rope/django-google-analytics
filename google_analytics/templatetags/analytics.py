@@ -40,7 +40,7 @@ class AnalyticsNode(template.Node):
         
     def render(self, context):
         content = ''
-        if settings.DEBUG or settings.IS_DEV :
+        if settings.DEBUG or settings.IS_DEV:
             return ''
         else :
             if self.site:
@@ -58,6 +58,9 @@ class AnalyticsNode(template.Node):
                 t = loader.get_template(self.template_name)
                 c = Context({
                     'analytics_code': code,
+                    'track_page_load_time': getattr(settings,
+                                                    "GOOGLE_ANALYTICS_TRACK_PAGE_LOAD_TIME",
+                                                    False),
                 })
                 return t.render(c)
             else:
